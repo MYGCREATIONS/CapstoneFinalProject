@@ -29,6 +29,12 @@ variable "db_password" {
   sensitive   = true
 }
 
+variable "multi_az" {
+  description = "Whether to enable Multi-AZ for the RDS instance."
+  type        = bool
+  default     = false
+}
+
 variable "name_prefix" {
   description = "Name prefix for resources."
   type        = string

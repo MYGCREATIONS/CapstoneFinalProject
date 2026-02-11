@@ -1,6 +1,6 @@
 resource "aws_security_group" "web_sg" {
   name        = "${var.name_prefix}-web-sg"
-  description = "Allow HTTP and SSH for demo access"
+  description = "Allow HTTP from the internet; SSH is optional and CIDR-restricted"
   vpc_id      = var.vpc_id
 
   ingress {
@@ -11,12 +11,15 @@ resource "aws_security_group" "web_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  ingress {
-    description = "SSH (lab only)"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+  dynamic "ingress" {
+    for_each = length(var.ssh_allowed_cidrs) > 0 ? [1] : []
+    content {
+      description = "SSH (restricted)"
+      from_port   = 22
+      to_port     = 22
+      protocol    = "tcp"
+      cidr_blocks = var.ssh_allowed_cidrs
+    }
   }
 
   egress {

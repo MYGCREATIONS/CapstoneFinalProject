@@ -18,6 +18,7 @@ module "network" {
 module "security" {
   source      = "./modules/security"
   vpc_id      = module.network.vpc_id
+  ssh_allowed_cidrs = var.ssh_allowed_cidrs
   name_prefix = local.project_name
   tags        = local.common_tags
 }
@@ -30,6 +31,7 @@ module "rds" {
   db_name            = var.db_name
   db_user            = var.db_user
   db_password        = var.db_password
+  multi_az           = false
   name_prefix        = local.project_name
   tags               = local.common_tags
 }
